@@ -69,14 +69,10 @@
             response.data.forEach((element) => {
                 build(element);
                 })}).catch(err => console.log(err));
-           }
-            
-
-            function build(element) {
-
-                 employeeHandle.innerHTML += `
-                   <option value="${element._id}">${element.name}</option>
-                 `;
+           };
+           
+           function build(element) {
+               employeeHandle.innerHTML += `<option value="${element._id}">${element.name}</option>`;
 
                 let ol = document.createElement('ol');
                 ol.setAttribute('id',`${element._id}`)
@@ -88,23 +84,21 @@
                 element.mobileNumbers.forEach(mobile => {
                     let li1 = document.createElement('li');
                     
-                    li1.innerHTML = `${mobile.numType}-${mobile.mobileNumber}  <input type = 'button' id = '${element._id}' name = '${mobile._id}' value = 'delete' onclick = "del(this)">`;
+                    li1.innerHTML = `${mobile.numType}-${mobile.mobileNumber}  <input type = 'button' id = '${element._id}' name = '${mobile._id}' value = 'delete' onclick = "deleteRow(this)">`;
 
                     ol.appendChild(li1);
-                    
-
-                })
+                 });
                 formHandle.appendChild(ol);
-                
-            }
-
-        function del(obj) {
+           };
+           
+           
+           function deleteRow(obj) {
             axios.delete(`http://localhost:3000/employees/${obj.id}/mobile_numbers/${obj.name}`)
             var listItems = document.getElementsByTagName("li"); // or document.querySelectorAll("li"); 
               for (var i = 0; i < listItems.length; i++) {
                    listItems[i].onclick = function() {this.parentNode.removeChild(this);}
-            }
-        }
+                 }
+            };
 
         contactFormHandle.addEventListener('submit',(e) => {
             e.preventDefault();
@@ -117,7 +111,7 @@
             console.log(addHandle)
             let li1 = document.createElement('li');
                     
-                    li1.innerHTML = `${numberTypeHandle.value}-${numberHandle.value}  <input type = 'button' id = '${employeeHandle.value}' value = 'delete' onclick = "del(this)">`;
+                    li1.innerHTML = `${numberTypeHandle.value}-${numberHandle.value}  <input type = 'button' id = '${employeeHandle.value}' value = 'delete' onclick = "deleteRow(this)">`;
                     addHandle.appendChild(li1);
                     contactFormHandle.reset();
                           
