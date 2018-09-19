@@ -99,7 +99,6 @@
             }
 
         function del(obj) {
-            
             axios.delete(`http://localhost:3000/employees/${obj.id}/mobile_numbers/${obj.name}`)
             var listItems = document.getElementsByTagName("li"); // or document.querySelectorAll("li"); 
               for (var i = 0; i < listItems.length; i++) {
@@ -119,21 +118,14 @@
             let li1 = document.createElement('li');
                     
                     li1.innerHTML = `${numberTypeHandle.value}-${numberHandle.value}  <input type = 'button' id = '${employeeHandle.value}' value = 'delete' onclick = "del(this)">`;
-
-                    
-
                     addHandle.appendChild(li1);
                     contactFormHandle.reset();
                           
             },false);
-            
-            
-           
-        });
+            });
 
          window.addEventListener('load', function(){
-            
-            getEmployees(); 
+             getEmployees(); 
          }, false);
 
             
