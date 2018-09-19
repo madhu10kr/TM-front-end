@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
+
+    <title>Document</title>
+</head>
+<body>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-6">
+                            <div id="app">
+                                    <form id="form">
+                                            
+                                    </form>
+                        
+                                </div>
+                    </div>
+                    <div class="col-md-6">
+                            <div>
+                                    <h3>Add Contact</h3>
+                    
+                    
+                                    <form id="contactForm">
+                                            <label for="employee">Employee</label>
+                                            <select name="employee" id="employee">
+                                                <option value="">Select</option>
+                                            </select>
+                                            <br/>
+                    
+                                            <label for="numberType">NumberType</label>
+                                            <select name="numberType" id="numberType">
+                                                <option value="">Select</option>
+                                                <option value="Office">Office</option>
+                                                <option value="Home">Home</option>
+                                                <option value="Secreatery">Secreatery</option>
+                                            </select>
+                                            <br/>
+                    
+                                            <label for="number">Number</label>
+                                            <input type="text" id="number">
+                                            <br/>
+                    
+                                            <input type="submit" class="btn btn-primary" /> or <input type="reset" class="btn btn-outline-warning" />
+                                            
+                                            
+                                    </form>
+                                </div> 
+                        </div>
+            </div>
+        </div>
+        
+       
+
+        <script>
+            let appHandle = document.getElementById('app');
+            let formHandle = document.getElementById('form');
+            let employeeHandle = document.getElementById('employee');
+            let contactFormHandle = document.getElementById('contactForm');
+            let numberHandle = document.getElementById('number');
+           let numberTypeHandle = document.getElementById('numberType');
+
+           function getEmployees() {
+            axios.get('http://localhost:3000/employees').then(response => {
+            response.data.forEach((element) => {
+                build(element);
+                })}).catch(err => console.log(err));
+           }
+            
+
+            function build(element) {
+
+                 employeeHandle.innerHTML += `
+                   <option value="${element._id}">${element.name}</option>
+                 `;
+
+                let ol = document.createElement('ol');
+                ol.setAttribute('id',`${element._id}`)
+                let h3 = document.createElement('h3');
+                
+                h3.innerHTML = element.name;
+                ol.appendChild(h3);
+                
+                element.mobileNumbers.forEach(mobile => {
+                    let li1 = document.createElement('li');
+                    
+                    li1.innerHTML = `${mobile.numType}-${mobile.mobileNumber}  <input type = 'button' id = '${element._id}' name = '${mobile._id}' value = 'delete' onclick = "del(this)">`;
+
+                    ol.appendChild(li1);
+                    
+
+                })
+                formHandle.appendChild(ol);
+                
+            }
+
+        function del(obj) {
+            
+            axios.delete(`http://localhost:3000/employees/${obj.id}/mobile_numbers/${obj.name}`)
+            var listItems = document.getElementsByTagName("li"); // or document.querySelectorAll("li"); 
+              for (var i = 0; i < listItems.length; i++) {
+                   listItems[i].onclick = function() {this.parentNode.removeChild(this);}
+            }
+        }
+
+        contactFormHandle.addEventListener('submit',(e) => {
+            e.preventDefault();
+            
+            //setTimeout(function(){location.reload(true) }, 1000);
+
+            axios.post(`http://localhost:3000/employees/${employeeHandle.value}/mobile_numbers`,{numType:numberTypeHandle.value,mobileNumber:numberHandle.value}).then(response => {
+                console.log(response.data);
+            let addHandle = document.getElementById(`${employeeHandle.value}`);
+            console.log(addHandle)
+            let li1 = document.createElement('li');
+                    
+                    li1.innerHTML = `${numberTypeHandle.value}-${numberHandle.value}  <input type = 'button' id = '${employeeHandle.value}' value = 'delete' onclick = "del(this)">`;
+
+                    
+
+                    addHandle.appendChild(li1);
+                    contactFormHandle.reset();
+                          
+            },false);
+            
+            
+           
+        });
+
+         window.addEventListener('load', function(){
+            
+            getEmployees(); 
+         }, false);
+
+            
+
+        
+        </script>
+</body>
+</html>
